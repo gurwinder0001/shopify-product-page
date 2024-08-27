@@ -1,0 +1,66 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css"  />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css" />
+<div class="container">
+   <div class="flex-box-slider">
+    <div>
+        <h2>{{ section.settings.title }}</h2>
+    </div>
+     {% assign productsa = product.metafields.custom.select_similar_category.value.handle  %}
+
+      {% assign my_collection = collections[productsa] %}
+
+    <div class="owl-carousel owl-theme">
+      
+  		{% for product in my_collection.products %}
+        <div class="item">
+            <div class="main-upper"> 
+                <div class="image">  
+                <a href="{{ product.url }}"> <img class="product__img" src="{{ product.featured_image | img_url: 'master' }}" alt="{{ product.featured_image.alt }}" /></a>
+                </div>
+                <div class="conts">
+                    <h4> <a href="{{ product.url }}" style="color:#000">{{ product.title | truncate: 50 }} </a></h4>
+                </div>
+              <div class="custom-compare"> 
+              <p class="main-price">{{ product.price | money_with_currency   }} </p>
+           </div>
+            </div>
+        </div>
+      
+        {% endfor %}
+        
+    </div>
+   </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+    <script>
+        $('.owl-carousel').owlCarousel({
+          loop:true,
+          margin:10,
+          nav:true,
+          autoplay:true,
+          autoplayTime:1000,
+          stagePadding:100,
+          dots:false,
+          responsive:{
+              0:{
+                  items:1
+              },
+              600:{
+                  items:1
+              },
+              1000:{
+                  items:2
+              },
+               2000:{
+                  items:2
+              }
+          }
+      });
+    </script>
+
+<style>
+ .owl-carousel {
+    margin-top: 4%;
+}
+  
+</style>
