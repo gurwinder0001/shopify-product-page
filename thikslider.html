@@ -1,0 +1,154 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css"  />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css" />
+
+<div class="container">
+   <div class="flex-box-slider">
+    <div>
+        <h2>{{ section.settings.title }}</h2>
+       <hr class="dmDivider about-section" id="hr-{{ section.id }}">
+    </div>
+
+   
+     
+    <div class="owl-carousel owl-theme">
+
+      {% for product in section.settings.collection.products  %}
+
+      
+        <div class="item">
+            <div class="main-upper">
+                <div class="image">
+                <a href="{{ product.url }}"> <img class="product__img" src="{{ product.featured_image | img_url: 'master' }}" alt="{{ product.featured_image.alt }}" /></a>
+                </div>
+                <div class="conts">
+                    <h4> <a href="{{ product.url }}" style="color:#000">{{ product.title | truncate: 50 }} </a></h4>
+                </div>
+              <div class="custom-compare"> 
+              <p class="main-price">{{ product.price | money_with_currency   }} </p>
+               
+              
+                
+             </div>
+            </div>
+        </div>
+      
+        {% endfor %}
+        
+    </div>
+   </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+    <script>
+        $('.owl-carousel').owlCarousel({
+          loop:true,
+          margin:40,
+          nav:true,
+          autoplay:true,
+          autoplayTime:1000,
+          stagePadding:100,
+          dots:false,
+          responsive:{
+              0:{
+                  items:1
+              },
+              600:{
+                  items:3
+              },
+              1000:{
+                  items:4
+              }
+          }
+      });
+    </script>
+
+<style>
+#hr-{{ section.id }} {
+      background-color: #8c51fe;
+      width: 100px;
+      height: 5px;
+      margin: 0px auto;
+  }
+
+ .owl-carousel {
+    margin-top: 4%;
+}
+  
+</style>
+
+
+{% schema %}
+  {
+    "name": "owl slide",
+    "settings": [
+      {
+      "type": "textarea",
+      "id": "title",
+      "label": "Heading",
+      "default": "Collection list"
+      },
+      {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Sub Heading",
+      "default": "Sub Heading"
+      },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+      {
+      "type": "range",
+      "id": "products_limit",
+      "label": "Limit products",
+      "min": 2,
+      "max": 50,
+      "step": 1,
+      "default": 7
+    }
+    ],
+  "blocks": [
+    {
+      "type": "custom",
+      "name": "image-picker",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "default": "Title",
+          "label": "Title"
+        },
+        {
+          "type": "image_picker",
+          "id": "slider-image",
+          "label": "slider Image"
+        },
+        {
+          "type": "url",
+          "id": "btn-url",
+          "label": "BTN URL"
+        },
+        {
+          "type": "text",
+          "id": "btn-text",
+          "label": "BTN Text"
+        }
+      ]
+    }
+  ],
+     "presets": [
+    {
+      "name": "owl-slider",
+      "category": "Custom"
+       }
+  ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}
