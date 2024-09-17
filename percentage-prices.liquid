@@ -1,0 +1,144 @@
+<section id="{{ section.id }}">
+  <div class="container">
+   <div class="flex-box-slider">
+    <div>
+        <h2>{{ section.settings.title }}</h2>
+       <hr class="dmDivider about-section" id="hr-{{ section.id }}">
+    </div>
+    <div class="product-theme">
+
+      {% for product in section.settings.collection.products limit: 5  %}
+
+      
+        <div class="item">
+       <div class="main-upper">
+          <div class="percentage-price">
+                {% if product.compare_at_price and product.compare_at_price > product.price %}
+                  {% assign price_difference = product.compare_at_price | minus: product.price %}
+                  {% assign price_percentage = price_difference | times: 100 | divided_by: product.compare_at_price | round %}
+                  <p>{{ price_percentage }}% off</p>
+                {% endif %}
+              </div>
+
+                <div class="image">
+                <a href="{{ product.url }}"> <img class="product__img" src="{{ product.featured_image | img_url: 'master' }}" alt="{{ product.featured_image.alt }}" /></a>
+                </div>
+                <div class="conts">
+                    <h4> <a href="{{ product.url }}" style="color:#000">{{ product.title | truncate: 20 }} </a></h4>
+                </div>
+              <div class="custom-compare"> 
+            <p class="main-price">
+                {{ product.price | money_with_currency }} 
+            <s>{{ product.compare_at_price | money_with_currency }}</s>
+        </p>
+        
+        {% if product.compare_at_price > product.price %}
+            <p class="savings"> save {{ product.compare_at_price | minus: product.price | money_with_currency }}</p>
+        {% endif %}
+
+              </div>
+            </div>
+        </div>
+       
+      
+        {% endfor %}
+        
+    </div>
+      <div class="view-btn">
+           <a href="{{ section.settings.collection.url }}">View All</a>
+          
+        </div>
+   </div>
+</div>
+  </section>
+<style>
+  #{{section.id}}{
+    margin-block:5rem;
+  }
+#hr-{{ section.id }} {
+      background-color: #F5C963;
+      width: 30%;
+      height: 3px;
+      margin: 0px auto;
+  }
+
+
+  
+</style>
+
+
+{% schema %}
+  {
+    "name": "Arrive Products",
+    "settings": [
+      {
+      "type": "textarea",
+      "id": "title",
+      "label": "Heading",
+      "default": "Collection list"
+      },
+      {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Sub Heading",
+      "default": "Sub Heading"
+      },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection",
+    },
+      {
+      "type": "range",
+      "id": "products_limit",
+      "label": "Limit products",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "default": 4
+    }
+    ],
+  "blocks": [
+    {
+      "type": "custom",
+      "name": "image-picker",
+      "limit":5,
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "default": "Title",
+          "label": "Title"
+        },
+        {
+          "type": "image_picker",
+          "id": "slider-image",
+          "label": "slider Image"
+        },
+        {
+          "type": "url",
+          "id": "btn-url",
+          "label": "BTN URL"
+        },
+        {
+          "type": "text",
+          "id": "btn-text",
+          "label": "BTN Text"
+        }
+      ]
+    }
+  ],
+     "presets": [
+    {
+      "name": "Arrive Products",
+      "category": "Custom"
+       }
+  ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}
