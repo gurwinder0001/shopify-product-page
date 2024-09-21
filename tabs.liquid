@@ -1,0 +1,194 @@
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<section id="{{ section.id }}" style="padding-top:{{ section.settings.ptop }}px; padding-bottom:{{ section.settings.pbottom }}px">
+ <div class="page-width container">
+    <div class="tabbedPanels">  <!-- begins the tabbed panels / wrapper-->
+      <ul class="tabs">
+     {% for block in section.blocks  %}   
+      <li><a href="#panel{% increment high %}">{{ block.settings.text }}</a></li>
+       {% endfor %} 
+      <!-- <li><a href="#panel{% increment high %}">Joan</a></li>
+      <li><a href="#panel{% increment high %}">Al</a></li>
+      <li><a href="#panel{% increment high %}">Teresa</a></li> -->
+    </ul>
+      
+
+    <div class="panelContainer">
+        <div id="panel0" class="panel">
+        {{ product.description }}  
+        </div>  <!-- end panel 1 -->
+        
+        
+        <div id="panel1" class="panel">
+           <p>
+             {{ product.metafields.custom.shipping_ }} 
+            </p>
+                
+        </div> <!-- end panel 2 -->
+        
+        
+        <div id="panel2" class="panel">
+            <p>
+             Joan, Kevin's mother, was the first volunteer as a donor. Although she was a match, she was temporarily disqualified as a kidney donor at that time. Joan has coordinated Organ Donation Awareness Acitivities at her place of work.
+             
+            </p>
+        </div>  <!-- end panel 3 -->
+        
+        <div id="panel3" class="panel">
+            <p>
+            Teresa,  also a relative and a website developer, volunteered to develop the website in September 2007, in cooperation with Al, Kevin and Joan. The goal of the website is to provide information and support to those in similar situations.
+            
+            </p>
+         </div>  <!-- end panel 4 -->
+        
+        </div> <!-- end div class="panelContainer" or panel wrapper -->
+    
+    </div> <!-- ends the tabbed panels / wrapper-->
+
+
+ </div>
+</section>
+{% style %}
+  .tabbedPanels{ 
+  margin-top: 25px;
+  }
+
+.panelContainer {
+	clear: left;
+	margin-bottom: 25px;
+	border: 2px solid #e8e8e8;	
+	background-color: #fff;
+	padding: 10px 20px;
+	/* add height if you want equal panels */
+}
+
+
+
+
+/* reset ul defaults  */
+.tabs {
+	margin: 0;
+	padding: 0;	
+	list-style: none;	
+}
+
+/* set li properties  */
+.tabs li {
+   float: left;
+   width: auto;
+   padding: 0;
+   margin: 0;
+   text-align: center;
+}
+
+/* all formatting goes inside 'a' */
+.tabs a {
+	display: block;
+	text-decoration: none;
+	color: #000;
+    font-weight: bold;
+	padding:  8px;
+	margin-right: 4px;  /* spaces out the tabs  */
+	border: 2px solid #ffde59;
+   border-top-right-radius: 5px;
+   border-top-left-radius: 5px;
+    margin-bottom: -2px;  /* negative margin will move it down
+	                         to blend in with outer border  */
+}
+
+
+.tabs a.active {
+	border-bottom: 2px solid #ffde59;
+	background-color: #ffde59;
+	color: #000;
+        font-weight: bold;
+}
+        
+ .panel img {
+             
+         margin-top: 10px;
+}
+
+.panel p  {
+             
+         margin-bottom: 0px;
+}
+
+
+{% endstyle %}
+{% javascript %}
+    
+
+
+$(document).ready(function() {
+    
+    //alert('here');
+	
+  $('.tabs a').click(function(){
+  
+     $('.panel').hide();
+     $('.tabs a.active').removeClass('active');
+     $(this).addClass('active');
+     
+     var panel = $(this).attr('href');
+     $(panel).fadeIn(1000);
+     
+     return false;  // prevents link action
+    
+  });  // end click 
+
+     $('.tabs li:first a').click();
+     
+}); // end ready
+
+
+
+
+
+{% endjavascript %}
+
+
+{% schema %}
+  {
+    "name": "custom tabs",
+    "settings": [
+      {
+        "type":"range",
+        "min":10,
+        "max":100,
+        "step":10,
+        "id":"ptop",
+        "label":"Padding top",
+        "default":10
+      },
+      {
+        "type":"range",
+        "min":10,
+        "max":100,
+        "step":10,
+        "id":"pbottom",
+        "label":"Padding top",
+        "default":10
+      }
+    ],
+    "blocks": [
+    {
+      "type": "custom",
+      "name": "New Tab",
+      "limit":3,
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": " Add Heading"
+          
+        }
+      ]
+    }
+  ],
+    "presets":[
+      {
+        "name":"custom tabs"
+      }
+    ]
+  }
+{% endschema %}
