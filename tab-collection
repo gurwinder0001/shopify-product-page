@@ -1,0 +1,121 @@
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+<section id="{{ section.id }}" style="padding-top:{{ section.settings.ptop }}px; padding-bottom:{{ section.settings.pbottom }}px">
+  <div class="page-width container">
+    
+    <h2 class="section-heading1">{{ section.settings.texthead }}</h2>
+
+    <div class="tabbedPanels">
+      <!-- Tabs Navigation -->
+      <ul class="tabs">
+        {% assign tab_index = 0 %}
+        {% for block in section.blocks %}
+          <li>
+            <a href="#panel{{ tab_index }}" class="{% if forloop.first %}active{% endif %}">{{ block.settings.text }}</a>
+          </li>
+          {% assign tab_index = tab_index | plus: 1 %}
+        {% endfor %}
+      </ul>
+
+      <!-- Panel Content -->
+      <div class="panelContainer">
+        {% assign panel_index = 0 %}
+        {% for block in section.blocks %}
+          <div id="panel{{ panel_index }}" class="panel" {% if forloop.first == false %} style="display: none;" {% endif %}>
+            <div class="product-cards-container">
+              {% assign collection = collections[block.settings.collection] %}
+              {% if collection and collection.products.size > 0 %}
+                {% for product in collection.products limit: 6 %}
+                  <div class="product-card">
+                    <img src="{{ product.featured_image | img_url: 'medium' }}" alt="{{ product.title }}">
+                    <h3>{{ product.title }}</h3>
+                    <p class="price">{{ product.price | money }}</p>
+
+                    <!-- Star Rating -->
+                    <div class="product-reviews">
+                      {% assign rating = product.metafields.reviews.rating | default: 4.5 %}
+                      <span class="stars">
+                        {% for i in (1..5) %}
+                          {% if rating >= i %}
+                            ⭐
+                          {% else %}
+                            ☆
+                          {% endif %}
+                        {% endfor %}
+                      </span>
+                      <!-- <span class="review-count">({{ product.metafields.reviews.count | default: 25 }} reviews)</span> -->
+                    </div>
+                  </div>
+                {% endfor %}
+              {% else %}
+                <p>No products available in this collection.</p>
+              {% endif %}
+            </div>
+          </div>
+          {% assign panel_index = panel_index | plus: 1 %}
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- See More Button -->
+    <div class="custom-product-seemore">
+      <a href="{{ section.settings.link | default: '#' }}" class="banner-btn11" style="background-color: {{ section.settings.bg-color | default: 'transparent' }}; color: {{ section.settings.text-color | default: 'transparent' }};">
+        {{ section.settings.button_text | default: 'SEE MORE ARTICLES' }}
+      </a>
+    </div>
+
+  </div>
+</section>
+
+{% style %}
+  .tabbedPanels { margin-top: 25px; }
+  .panelContainer { clear: left; margin-bottom: 25px; background-color: #fff; padding: 10px 20px; }
+  .product-cards-container { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; padding-top: 30px; }
+  .tabs { margin: 0; padding: 0; list-style: none; display: flex; justify-content: center; gap: 60px; }
+  .tabs li { text-align: center; }
+  .tabs a { text-decoration: none; color: #691C32; font-size: 24px; font-family: 'Raleway'; font-weight: 400; }
+  .tabs a.active { color: #AB0033; font-weight: bold; }
+  h2.section-heading1 { text-align: center; color: #ab0033; font-family: Raleway; font-size: 50px; font-weight: 600; }
+{% endstyle %}
+
+{% javascript %}
+$(document).ready(function() {
+  $('.tabs a').click(function(event) {
+    event.preventDefault();
+    
+    $('.panel').hide();
+    $('.tabs a').removeClass('active');
+    $(this).addClass('active');
+    
+    var panelID = $(this).attr('href');
+    $(panelID).fadeIn(500);
+  });
+
+  $('.tabs li:first a').trigger('click');
+});
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Custom Tabs",
+  "settings": [
+    { "type": "range", "min": 10, "max": 100, "step": 10, "id": "ptop", "label": "Padding Top", "default": 10 },
+    { "type": "range", "min": 10, "max": 100, "step": 10, "id": "pbottom", "label": "Padding Bottom", "default": 10 },
+    { "type": "text", "id": "texthead", "label": "Add Heading" },
+    { "type": "color", "id": "bg-color", "label": "Add Bg-color" },
+    { "type": "color", "id": "text-color", "label": "Add Text-color" }
+  ],
+  "blocks": [
+    {
+      "type": "custom",
+      "name": "New Tab",
+      "limit": 6,
+      "settings": [
+        { "type": "text", "id": "text", "label": "Add Heading" },
+        { "type": "collection", "id": "collection", "label": "Select a Collection" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Custom Tabs" }]
+}
+{% endschema %}
