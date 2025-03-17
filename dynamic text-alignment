@@ -1,0 +1,19 @@
+{% liquid
+  assign alignment_class = ''
+  case block.settings.alignment
+    when 'center'
+      assign alignment_class = 'center'
+    when 'right'
+      assign alignment_class = 'a-right'
+    else
+      assign alignment_class = 'a-left'
+  endcase
+ %}
+
+
+   {
+         "type": "text_alignment",
+         "id": "alignment",
+         "label": "Text alignment",
+         "default": "center"
+      }
