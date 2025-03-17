@@ -9,6 +9,21 @@
       assign alignment_class = 'a-left'
   endcase
  %}
+<div class="caption {{ alignment_class }}">
+                {% if block.settings.title != blank %}
+                  <h3>{{ block.settings.title | escape }}</h3>
+                {% endif %}
+                {% if block.settings.caption_text != blank %}
+                  <div class="rte">
+                    {{ block.settings.caption_text }}
+                  </div>
+                {% endif %}
+                {% if block.settings.link != blank and block.settings.button_text != blank %}
+                <div class="gallery__btn-wrapper">
+                  <a href="{{ block.settings.link }}">{{ block.settings.button_text | escape }}</a>
+                </div>
+                {% endif %}
+              </div>
 
 
    {
