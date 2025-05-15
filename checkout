@@ -1,0 +1,40 @@
+<button type="button" class="buy-now-button" onclick="buyNow()">
+  Buy Now
+</button>
+
+<script>
+function buyNow() {
+  var selectedVariantId = document.querySelector('[name="id"]').value; // Get selected variant ID
+  var quantityInput = document.querySelector('input[name="quantity"]'); // Find quantity input
+  var quantity = quantityInput ? parseInt(quantityInput.value, 10) : 1; // Use quantity value, fallback to 1
+
+  if (!selectedVariantId) {
+    alert('Please select a product option.');
+    return;
+  }
+
+  if (!quantity || quantity < 1) {
+    alert('Please enter a valid quantity.');
+    return;
+  }
+
+  fetch('/cart/clear.js', { method: 'POST' })
+    .then(() => {
+      return fetch('/cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: selectedVariantId,
+          quantity: quantity
+        })
+      });
+    })
+    .then(() => {
+      window.location.href = '/checkout';
+    })
+    .catch((error) => {
+      console.error('Error during Buy Now:', error);
+      alert('Something went wrong. Please try again.');
+    });
+}
+</script>
