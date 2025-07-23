@@ -1,0 +1,97 @@
+{% comment %}
+  Featured Collections Marquee Section
+{% endcomment %}
+
+<section id="{{ section.id }}">
+  <div class="">
+    <div class="collection-heading">
+      <h2>{{ section.settings.heading }}</h2>
+    </div>
+    <div class="collection-slider">
+      {% for collection in collections %}
+        <div class="collection-item">
+          <a href="{{ collection.url }}">
+            <img src="{{ collection.featured_image | img_url: 'medium' }}" alt="{{ collection.title }}">
+            <div class="collection-name">{{ collection.title }}</div>
+          </a>
+        </div>
+      {% endfor %}
+      {% for collection in collections %}
+        <div class="collection-item">
+          <a href="{{ collection.url }}">
+            <img src="{{ collection.featured_image | img_url: 'medium' }}" alt="{{ collection.title }}">
+            <div class="collection-name">{{ collection.title }}</div>
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<style>
+  #{{ section.id }} .collection-item {
+    padding: 10px;
+    width: auto;
+  }
+
+  #{{ section.id }} .collection-item img {
+    width: 100px;
+    display: block;
+    max-width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin: 0 auto;
+  }
+
+  #{{ section.id }} .collection-slider {
+    margin-top: 20px;
+    display: flex;
+    gap:20px;
+    align-items: center;
+  }
+  #{{ section.id }} .collection-item a{
+    display:flex;
+    gap:10px;
+    align-items:center;
+    text-decoration:none;
+  }
+
+  #{{ section.id }} .collection-name {
+    font-size: 35px;
+    text-align: center;
+    color: transparent;
+    -webkit-text-stroke: 1px #000;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    margin-top: 10px;
+  }
+
+  #{{ section.id }} .collection-item:hover .collection-name {
+    color: #000;
+    -webkit-text-stroke: 0px transparent;
+  }
+</style>
+
+
+
+
+
+
+{% schema %}
+{
+  "name": "Featured Collections",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Featured Collections"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Collections"
+    }
+  ]
+}
+{% endschema %}
