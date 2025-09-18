@@ -1,0 +1,292 @@
+<section id="multi-tabs-{{ section.id }}" class="multi-tabs-section page-width">
+  <div class="container">
+    <div class="main-tabs-nav">
+      {% for block in section.blocks %}
+        <button 
+          class="main-tab-btn {% if forloop.first %}active{% endif %}" 
+          data-main="main-{{ section.id }}-{{ forloop.index }}">
+          {{ block.settings.main_title }}
+        </button>
+      {% endfor %}
+    </div>
+    {% for block in section.blocks %}
+      <div 
+        id="main-{{ section.id }}-{{ forloop.index }}" 
+        class="main-panel {% if forloop.first %}active{% endif %}">
+        <div class="inner-tabs-nav">
+          {% for i in (1..4) %}
+            {% assign key_title = "inner_title_" | append: i %}
+            {% assign key_collection = "inner_collection_" | append: i %}
+            {% assign inner_title = block.settings[key_title] %}
+            {% assign inner_collection = block.settings[key_collection] %}
+            {% if inner_title != blank and inner_collection != blank %}
+              <button 
+                class="inner-tab-btn {% if forloop.first %}active{% endif %}" 
+                data-inner="inner-{{ section.id }}-{{ forloop.parentloop.index }}-{{ i }}">
+                {{ inner_title }}
+              </button>
+            {% endif %}
+          {% endfor %}
+        </div>
+        {% for i in (1..4) %}
+          {% assign key_title = "inner_title_" | append: i %}
+          {% assign key_collection = "inner_collection_" | append: i %}
+          {% assign inner_title = block.settings[key_title] %}
+          {% assign inner_collection = block.settings[key_collection] %}
+          {% assign collection = collections[inner_collection] %}
+          {% if inner_title != blank and inner_collection != blank %}
+            <div 
+              id="inner-{{ section.id }}-{{ forloop.parentloop.index }}-{{ i }}" 
+              class="inner-panel {% if forloop.first %}active{% endif %}">
+
+              {% assign product_count = collection.products_count %}
+
+              {% if product_count > 4 %}
+                <div class="inner-slick-{{ section.id }}-{{ forloop.parentloop.index }}-{{ i }}">
+                  {% for product in collection.products limit: 12 %}
+                    <div class="product-card">
+                      <a href="{{ product.url }}" class="prod-link">
+                        <div class="prod-img">
+                          {% if product.featured_image %}
+                            <img src="{{ product.featured_image | img_url: '600x' }}" alt="{{ product.title }}">
+                          {% endif %}
+                        </div>
+                        <div class="prod-info">
+                          <h3 class="prod-title">{{ product.title }}</h3>
+                          <p class="prod-price">
+                            {% if product.compare_at_price > product.price %}
+                              <span class="sale-price">{{ product.price | money }}</span>
+                              <span class="old-price">{{ product.compare_at_price | money }}</span>
+                              <span class="discount">
+                                {{ product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round }}% off
+                              </span>
+                            {% else %}
+                              {{ product.price | money }}
+                            {% endif %}
+                          </p>
+                        </div>
+                      </a>
+                    </div>
+                  {% endfor %}
+                </div>
+                <div class="slick-prev prev-{{ section.id }}-{{ forloop.parentloop.index }}-{{ i }}">‹</div>
+                <div class="slick-next next-{{ section.id }}-{{ forloop.parentloop.index }}-{{ i }}">›</div>
+              {% else %}
+                <div class="static-grid">
+                  {% for product in collection.products limit: 12 %}
+                    <div class="product-card">
+                      <a href="{{ product.url }}" class="prod-link">
+                        <div class="prod-img">
+                          {% if product.featured_image %}
+                            <img src="{{ product.featured_image | img_url: '600x' }}" alt="{{ product.title }}">
+                          {% endif %}
+                        </div>
+                        <div class="prod-info">
+                          <h3 class="prod-title">{{ product.title }}</h3>
+                          <p class="prod-price">
+                            {% if product.compare_at_price > product.price %}
+                              <span class="sale-price">{{ product.price | money }}</span>
+                              <span class="old-price">{{ product.compare_at_price | money }}</span>
+                              <span class="discount">
+                                {{ product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round }}% off
+                              </span>
+                            {% else %}
+                              {{ product.price | money }}
+                            {% endif %}
+                          </p>
+                        </div>
+                      </a>
+                    </div>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+<style>
+  #multi-tabs-{{ section.id }}{ position:relative; }
+  #multi-tabs-{{ section.id }}.multi-tabs-section { padding:40px 0; }
+  #multi-tabs-{{ section.id }} .main-tabs-nav,
+  #multi-tabs-{{ section.id }} .inner-tabs-nav { display:flex; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  #multi-tabs-{{ section.id }} .main-tab-btn, 
+  #multi-tabs-{{ section.id }} .inner-tab-btn {
+    background:none; border:0; font-size:16px; padding:6px 0; cursor:pointer; position:relative; color:#333;
+  }
+  #multi-tabs-{{ section.id }} .main-tab-btn.active, 
+  #multi-tabs-{{ section.id }} .inner-tab-btn.active { font-weight:600; color:#b62d2d; }
+  #multi-tabs-{{ section.id }} .main-tab-btn.active::after, 
+  #multi-tabs-{{ section.id }} .inner-tab-btn.active::after {
+    content:""; position:absolute; left:0; right:0; bottom:-4px; height:2px;
+    background:#b62d2d; border-radius:2px;
+  }
+  #multi-tabs-{{ section.id }} .main-panel, 
+  .inner-panel { display:none; }
+  #multi-tabs-{{ section.id }} .main-panel.active, 
+  #multi-tabs-{{ section.id }} .inner-panel.active { display:block; }
+
+  #multi-tabs-{{ section.id }} .product-card { 
+    text-align:left; background:#fff; border-radius:8px; overflow:hidden; margin:0 10px; 
+  }
+  #multi-tabs-{{ section.id }} .prod-img img { width:100%; height:auto; display:block; }
+  #multi-tabs-{{ section.id }} .prod-info { padding:10px; }
+  #multi-tabs-{{ section.id }} .prod-title { font-size:15px; margin:0 0 4px; color:#222; }
+  #multi-tabs-{{ section.id }} .prod-price { font-size:14px; color:#333; }
+  #multi-tabs-{{ section.id }} .sale-price { color:#b62d2d; font-weight:600; margin-right:6px; }
+  #multi-tabs-{{ section.id }} .old-price { text-decoration:line-through; color:#888; margin-right:6px; font-size:13px; }
+  #multi-tabs-{{ section.id }} .discount { color:#2a7c2a; font-size:13px; }
+
+  #multi-tabs-{{ section.id }} .slick-prev, 
+  #multi-tabs-{{ section.id }} .slick-next {
+    color:#333; background:#fff; border-radius:50%; width:34px; height:34px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.15);
+    display:flex; align-items:center; justify-content:center;
+    position:absolute; top:50%; transform:translateY(-50%);
+    z-index:10;
+  }
+  #multi-tabs-{{ section.id }} .slick-prev { left:-15px; }
+  #multi-tabs-{{ section.id }} .slick-next { right:-15px; }
+
+  /* Static grid for <= 4 products */
+  #multi-tabs-{{ section.id }} .static-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+  @media (max-width: 1200px) {
+    #multi-tabs-{{ section.id }} .static-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 768px) {
+    #multi-tabs-{{ section.id }} .static-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 480px) {
+    #multi-tabs-{{ section.id }} .static-grid { grid-template-columns: 1fr; }
+  }
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const sectionId = "{{ section.id }}";
+  const sectionEl = document.getElementById("multi-tabs-" + sectionId);
+
+  // Main Tabs
+  const mainBtns = sectionEl.querySelectorAll(".main-tab-btn");
+  const mainPanels = sectionEl.querySelectorAll(".main-panel");
+
+  mainBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      mainBtns.forEach(b => b.classList.remove("active"));
+      mainPanels.forEach(p => p.classList.remove("active"));
+      btn.classList.add("active");
+      const id = btn.dataset.main;
+      const activePanel = sectionEl.querySelector("#" + id);
+      activePanel.classList.add("active");
+      $(activePanel).find(".slick-initialized").slick("setPosition");
+    });
+  });
+  sectionEl.querySelectorAll(".main-panel").forEach(panel => {
+    const innerBtns = panel.querySelectorAll(".inner-tab-btn");
+    const innerPanels = panel.querySelectorAll(".inner-panel");
+    innerBtns.forEach(btn => {
+      btn.addEventListener("click", () => {
+        innerBtns.forEach(b => b.classList.remove("active"));
+        innerPanels.forEach(p => p.classList.remove("active"));
+        btn.classList.add("active");
+        const activeInner = panel.querySelector("#" + btn.dataset.inner);
+        activeInner.classList.add("active");
+        $(activeInner).find(".slick-initialized").slick("setPosition");
+      });
+    });
+  });
+  {% for block in section.blocks %}
+    {% for i in (1..4) %}
+      {% assign key_collection = "inner_collection_" | append: i %}
+      {% assign inner_collection = block.settings[key_collection] %}
+      {% if inner_collection != blank %}
+        {% assign collection = collections[inner_collection] %}
+        {% if collection.products_count > 4 %}
+          $(".inner-slick-{{ section.id }}-{{ forloop.parentloop.index }}-{{ i }}").slick({
+            slidesToShow: 4,
+            slidesToScroll: 1,
+            infinite: true,
+            autoplay:true,
+            arrows: true,
+            prevArrow: $(".prev-{{ section.id }}-{{ forloop.parentloop.index }}-{{ i }}"),
+            nextArrow: $(".next-{{ section.id }}-{{ forloop.parentloop.index }}-{{ i }}"),
+            responsive: [
+              { breakpoint: 1200, settings: { slidesToShow: 3 } },
+              { breakpoint: 768, settings: { slidesToShow: 2 } },
+              { breakpoint: 0, settings: { slidesToShow: 1 } }
+            ]
+          });
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
+});
+</script>
+{% schema %}
+{
+  "name": "Multi Tabs Slider (Slick)",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "main_tab",
+      "name": "Main Tab",
+      "settings": [
+        { "type": "text", 
+          "id": "main_title", 
+          "label": "Main Tab Title", 
+          "default": "Bestsellers" 
+        },
+        { "type": "text", 
+          "id": "inner_title_1", 
+          "label": "Inner Tab 1 Title"
+         },
+        { "type": "collection", 
+          "id": "inner_collection_1", 
+          "label": "Inner Tab 1 Collection" 
+        },
+        { "type": "text", 
+          "id": "inner_title_2", 
+          "label": "Inner Tab 2 Title"
+         },
+        { "type": "collection", 
+          "id": "inner_collection_2", 
+          "label": "Inner Tab 2 Collection"
+         },
+        { "type": "text", 
+          "id": "inner_title_3", 
+          "label": "Inner Tab 3 Title" 
+        },
+        { "type": "collection", 
+          "id": "inner_collection_3", 
+          "label": "Inner Tab 3 Collection"
+         },
+        { "type": "text", 
+          "id": "inner_title_4", 
+          "label": "Inner Tab 4 Title"
+         },
+        { 
+          "type": "collection", 
+          "id": "inner_collection_4", 
+          "label": "Inner Tab 4 Collection"
+         }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Multi Tabs Slider (Slick)",
+      "category": "Custom Sections"
+    }
+  ]
+}
+{% endschema %}
+
+
+/* slick slide k cdn laga lena */
