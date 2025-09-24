@@ -1,0 +1,91 @@
+<!-- Shipping Progress Bar -->
+<div class="progress-bar-shipping">
+  {% assign free_shipping_threshold = 20000 %} 
+  {% if cart.total_price >= free_shipping_threshold %}
+    <p class="progress-message success">You’ve unlocked FREE shipping!</p>
+    <div class="progress">
+      <div class="progress-fill" style="width:100%"></div>
+    </div>
+  {% else %}
+    {% assign remaining = free_shipping_threshold | minus: cart.total_price %}
+    <p class="progress-message">
+      Add <strong>{{ remaining | money }}</strong> more to unlock FREE shipping.
+      <br>$50 shipping will apply.
+    </p>
+    <div class="progress">
+      {% assign percent = cart.total_price | times: 100 | divided_by: free_shipping_threshold %}
+      <div class="progress-fill" style="width:{{ percent }}%"></div>
+    </div>
+  {% endif %}
+</div>
+<script>
+function refreshProgressDiv() {
+  const progressBars = document.getElementsByClassName('progress');
+  const progressMessages = document.getElementsByClassName('progress-message');
+
+  fetch('/cart.js')
+    .then(res => res.json())
+    .then(cart => {
+      const freeShippingThreshold = 20000;
+      const totalPrice = cart.total_price;
+      const percent = Math.min((totalPrice * 100) / freeShippingThreshold, 100);
+
+      if (totalPrice >= freeShippingThreshold) {
+        // ✅ FREE shipping unlocked
+        Array.from(progressMessages).forEach(msg => {
+          msg.innerHTML = "🎉 You’ve unlocked FREE shipping!";
+          msg.classList.add("success");
+        });
+        Array.from(progressBars).forEach(div => {
+          div.innerHTML = `<div class="progress-fill" style="width:100%"></div>`;
+        });
+      } else {
+        // ✅ Still need to add more
+        const remaining = freeShippingThreshold - totalPrice;
+        Array.from(progressMessages).forEach(msg => {
+          msg.innerHTML = `Add <strong>$${(remaining/100).toFixed(2)}</strong> more to unlock FREE shipping.<br>$50 shipping will apply.`;
+          msg.classList.remove("success");
+        });
+        Array.from(progressBars).forEach(div => {
+          div.innerHTML = `<div class="progress-fill" style="width:${percent}%"></div>`;
+        });
+      }
+    })
+    .catch(err => console.error('Error updating progress bar:', err));
+}
+refreshProgressDiv();
+setInterval(refreshProgressDiv, 1000);
+</script>
+
+
+<style>
+.progress-bar-shipping {
+  margin: 15px 0;
+  text-align: center;
+  font-family: Arial, sans-serif;
+}
+.progress-bar-shipping .progress-message {
+  font-size: 14px;
+  margin-bottom: 8px;
+  line-height: 1.4;
+  text-align:left;
+}
+.progress-bar-shipping .progress-message.success {
+  color: #2d7a2d;
+  font-weight: bold;
+}
+.progress-bar-shipping .progress {
+  width: 100%;
+  height: 12px;
+  background: #eee;
+  border-radius: 20px;
+  overflow: hidden;
+  position: relative;
+}
+.progress-bar-shipping .progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #3d550c, #3d550f);
+  transition: width 0.5s ease-in-out;
+}
+</style>
+
